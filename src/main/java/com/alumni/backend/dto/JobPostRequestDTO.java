@@ -1,5 +1,6 @@
 package com.alumni.backend.dto;
 
+import com.alumni.backend.model.QuizQuestion;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -36,4 +37,7 @@ public class JobPostRequestDTO {
     @NotNull(message = "Application deadline is required")
     private LocalDate applicationDeadline;
     private String applicationUrl;
+    private Boolean quizEnabled;
+
+    private List<QuizQuestion> quizQuestions;
 }

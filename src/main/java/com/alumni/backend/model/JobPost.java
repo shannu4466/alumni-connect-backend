@@ -30,4 +30,6 @@ public class JobPost {
     private String applicationUrl;
     private LocalDate postedDate;
     private String status;
+    private Boolean quizEnabled;
+    private List<QuizQuestion> quizQuestions;
 }

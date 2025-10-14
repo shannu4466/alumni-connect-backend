@@ -7,17 +7,17 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.List;
 
-@Document(collection = "quiz_questions")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Document(collection = "quiz_questions")
 public class QuizQuestion {
     @Id
     private String id;
     private String question;
     private List<String> options;
-    private Integer correctAnswerIndex;
-    private String explanation;
-    private String difficulty;
-    private String category;
+    private int correctAnswerIndex;
+    private String explanation; 
+    private String difficulty; 
+    private String category; 
 }

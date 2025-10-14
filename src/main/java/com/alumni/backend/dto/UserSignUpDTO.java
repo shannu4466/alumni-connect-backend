@@ -33,10 +33,12 @@ public class UserSignUpDTO {
     @NotBlank(message = "College Name is required")
     private String collegeName;
 
+    @NotBlank(message = "Branch is required")
+    private String branch;
+
     @NotNull(message = "Graduation Year is required")
     private Integer graduationYear;
 
-    @NotNull(message = "Working company name is required")
     private String company;
 
     private String bio;

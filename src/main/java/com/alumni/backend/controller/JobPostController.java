@@ -36,6 +36,33 @@ public class JobPostController {
                 this.notificationService = notificationService;
         }
 
+        private JobPostResponseDTO mapToJobPostResponseDTO(JobPost post) {
+                // This helper method centralizes the DTO creation, ensuring all fields are
+                // mapped.
+                // NOTE: This assumes your JobPostResponseDTO constructor now accepts the new
+                // Boolean quizEnabled
+                // as the last argument before quizQuestions (or its corresponding position).
+                return new JobPostResponseDTO(
+                                post.getId(),
+                                post.getAlumniId(),
+                                post.getAlumniName(),
+                                post.getTitle(),
+                                post.getCompany(),
+                                post.getLocation(),
+                                post.getJobType(),
+                                post.getSalaryMin(),
+                                post.getSalaryMax(),
+                                post.getDescription(),
+                                post.getRequirements(),
+                                post.getSkills(),
+                                post.getApplicationDeadline(),
+                                post.getApplicationUrl(),
+                                post.getPostedDate(),
+                                post.getStatus(),
+                                post.getQuizEnabled(), // NEW: Map quizEnabled from the JobPost model
+                                post.getQuizQuestions());
+        }
+
         @PostMapping
         public ResponseEntity<?> createJobPost(@Valid @RequestBody JobPostRequestDTO jobPostRequestDTO) {
                 User alumniUser = userRepository.findById(jobPostRequestDTO.getAlumniId()).orElse(null);
@@ -59,6 +86,14 @@ public class JobPostController {
                 newJobPost.setApplicationUrl(jobPostRequestDTO.getApplicationUrl());
                 newJobPost.setPostedDate(LocalDate.now());
                 newJobPost.setStatus("ACTIVE");
+                newJobPost.setQuizEnabled(jobPostRequestDTO.getQuizEnabled()); // NEW: Map the flag
+                newJobPost.setQuizQuestions(jobPostRequestDTO.getQuizQuestions());
+
+                // Crucial logic: If quiz is NOT enabled, ensure quizQuestions is null/empty
+                // in the DB, even if the DTO carried some old/junk data.
+                if (Boolean.FALSE.equals(newJobPost.getQuizEnabled())) {
+                        newJobPost.setQuizQuestions(null);
+                }
 
                 JobPost savedJobPost = jobPostRepository.save(newJobPost);
 
@@ -91,48 +126,14 @@ public class JobPostController {
                         }
                 }
 
-                JobPostResponseDTO responseDTO = new JobPostResponseDTO(
-                                savedJobPost.getId(),
-                                savedJobPost.getAlumniId(),
-                                savedJobPost.getAlumniName(),
-                                savedJobPost.getTitle(),
-                                savedJobPost.getCompany(),
-                                savedJobPost.getLocation(),
-                                savedJobPost.getJobType(),
-                                savedJobPost.getSalaryMin(),
-                                savedJobPost.getSalaryMax(),
-                                savedJobPost.getDescription(),
-                                savedJobPost.getRequirements(),
-                                savedJobPost.getSkills(),
-                                savedJobPost.getApplicationDeadline(),
-                                savedJobPost.getApplicationUrl(),
-                                savedJobPost.getPostedDate(),
-                                savedJobPost.getStatus());
-
-                return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+                return new ResponseEntity<>(mapToJobPostResponseDTO(savedJobPost), HttpStatus.CREATED);
         }
 
         @GetMapping
         public ResponseEntity<List<JobPostResponseDTO>> getAllJobPosts() {
                 List<JobPost> jobPosts = jobPostRepository.findAll();
                 List<JobPostResponseDTO> responseDTOs = jobPosts.stream()
-                                .map(post -> new JobPostResponseDTO(
-                                                post.getId(),
-                                                post.getAlumniId(),
-                                                post.getAlumniName(),
-                                                post.getTitle(),
-                                                post.getCompany(),
-                                                post.getLocation(),
-                                                post.getJobType(),
-                                                post.getSalaryMin(),
-                                                post.getSalaryMax(),
-                                                post.getDescription(),
-                                                post.getRequirements(),
-                                                post.getSkills(),
-                                                post.getApplicationDeadline(),
-                                                post.getApplicationUrl(),
-                                                post.getPostedDate(),
-                                                post.getStatus()))
+                                .map(this::mapToJobPostResponseDTO)
                                 .collect(Collectors.toList());
                 return new ResponseEntity<>(responseDTOs, HttpStatus.OK);
         }
@@ -145,47 +146,14 @@ public class JobPostController {
                 }
                 JobPost post = jobPostOptional.get();
 
-                JobPostResponseDTO responseDTO = new JobPostResponseDTO(
-                                post.getId(),
-                                post.getAlumniId(),
-                                post.getAlumniName(),
-                                post.getTitle(),
-                                post.getCompany(),
-                                post.getLocation(),
-                                post.getJobType(),
-                                post.getSalaryMin(),
-                                post.getSalaryMax(),
-                                post.getDescription(),
-                                post.getRequirements(),
-                                post.getSkills(),
-                                post.getApplicationDeadline(),
-                                post.getApplicationUrl(),
-                                post.getPostedDate(),
-                                post.getStatus());
-                return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+                return new ResponseEntity<>(mapToJobPostResponseDTO(post), HttpStatus.OK);
         }
 
         @GetMapping("/by-alumni/{alumniId}")
         public ResponseEntity<List<JobPostResponseDTO>> getJobPostsByAlumni(@PathVariable String alumniId) {
                 List<JobPost> jobPosts = jobPostRepository.findByAlumniId(alumniId);
                 List<JobPostResponseDTO> responseDTOs = jobPosts.stream()
-                                .map(post -> new JobPostResponseDTO(
-                                                post.getId(),
-                                                post.getAlumniId(),
-                                                post.getAlumniName(),
-                                                post.getTitle(),
-                                                post.getCompany(),
-                                                post.getLocation(),
-                                                post.getJobType(),
-                                                post.getSalaryMin(),
-                                                post.getSalaryMax(),
-                                                post.getDescription(),
-                                                post.getRequirements(),
-                                                post.getSkills(),
-                                                post.getApplicationDeadline(),
-                                                post.getApplicationUrl(),
-                                                post.getPostedDate(),
-                                                post.getStatus()))
+                                .map(this::mapToJobPostResponseDTO)
                                 .collect(Collectors.toList());
                 return new ResponseEntity<>(responseDTOs, HttpStatus.OK);
         }

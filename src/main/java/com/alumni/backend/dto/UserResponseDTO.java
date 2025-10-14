@@ -18,6 +18,7 @@ public class UserResponseDTO {
     private String email;
     private String role;
     private String collegeName;
+    private String branch;
     private Integer graduationYear;
     private String bio;
     private List<String> skills;
@@ -29,6 +30,7 @@ public class UserResponseDTO {
     private String resume;
     private String rollNumber;
     private String company;
+    private String position;
     private String applicationStatus;
     private LocalDateTime submittedDate;
 }

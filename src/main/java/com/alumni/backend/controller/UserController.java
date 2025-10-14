@@ -101,6 +101,7 @@ public class UserController {
         newUser.setFullName(signUpDTO.getFullName());
         newUser.setEmail(signUpDTO.getEmail());
         newUser.setCollegeName(signUpDTO.getCollegeName());
+        newUser.setBranch(signUpDTO.getBranch());
         newUser.setGraduationYear(signUpDTO.getGraduationYear());
         newUser.setBio(signUpDTO.getBio());
         newUser.setSkills(signUpDTO.getSkills());
@@ -191,6 +192,8 @@ public class UserController {
             user.setSkills(updatedUserDto.getSkills());
         if (updatedUserDto.getCollegeName() != null)
             user.setCollegeName(updatedUserDto.getCollegeName());
+        if (updatedUserDto.getBranch() != null)
+            user.setBranch(updatedUserDto.getBranch());
         if (updatedUserDto.getGraduationYear() != null)
             user.setGraduationYear(updatedUserDto.getGraduationYear());
         if (updatedUserDto.getLinkedinProfile() != null)
@@ -201,6 +204,8 @@ public class UserController {
             user.setLocation(updatedUserDto.getLocation());
         if (updatedUserDto.getRollNumber() != null)
             user.setRollNumber(updatedUserDto.getRollNumber());
+        if (updatedUserDto.getPosition() != null)
+            user.setPosition(updatedUserDto.getPosition());
         if (updatedUserDto.getCompany() != null)
             user.setCompany(updatedUserDto.getCompany());
         if (updatedUserDto.getProfileImage() != null)
@@ -286,6 +291,7 @@ public class UserController {
                 user.getEmail(),
                 user.getRole(),
                 user.getCollegeName(),
+                user.getBranch(),
                 user.getGraduationYear(),
                 user.getBio(),
                 user.getSkills(),
@@ -296,6 +302,7 @@ public class UserController {
                 user.getProfileImage(),
                 user.getResume(),
                 user.getRollNumber(),
+                user.getPosition(),
                 user.getCompany(),
                 user.getApplicationStatus(),
                 user.getSubmittedDate());

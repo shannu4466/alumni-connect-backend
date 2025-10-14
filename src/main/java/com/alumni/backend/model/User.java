@@ -23,6 +23,7 @@ public class User {
     private String email;
     private String password;
     private String collegeName;
+    private String branch;
     private Integer graduationYear;
     private String bio;
     private List<String> skills;

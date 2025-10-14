@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.alumni.backend.model.QuizQuestion;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,4 +28,6 @@ public class JobPostResponseDTO {
     private String applicationUrl;
     private LocalDate postedDate;
     private String status;
+    private Boolean quizEnabled;
+    private List<QuizQuestion> quizQuestions;
 }

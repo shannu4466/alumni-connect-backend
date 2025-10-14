@@ -16,6 +16,8 @@ public class UserProfileUpdateDTO {
     private String location;
     private String rollNumber;
     private String company;
+    private String position;
     private String profileImage;
     private String resume;
+    private String branch;
 }

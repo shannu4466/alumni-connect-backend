@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api/quizzes")
@@ -44,7 +45,25 @@ public class QuizController {
                         @RequestParam List<String> categories,
                         @RequestParam(defaultValue = "10") int limit) {
 
-                List<QuizQuestion> questions = quizQuestionRepository.findByCategoryIn(categories);
+                System.out.println("Skills : " + categories);
+                List<String> comprehensiveCategories = categories.stream()
+                                .filter(c -> c != null && !c.trim().isEmpty())
+                                .flatMap(c -> {
+                                        String lowerCased = c.toLowerCase();
+                                        String titleCased = lowerCased.substring(0, 1).toUpperCase()
+                                                        + lowerCased.substring(1);
+                                        String upperCased = c.toUpperCase();
+                                        // Query for the 3 most likely storage formats to ensure a match.
+                                        return Stream.of(lowerCased, titleCased, upperCased);
+                                })
+                                .distinct()
+                                .collect(Collectors.toList());
+
+                List<QuizQuestion> questions = quizQuestionRepository.findByCategoryIn(comprehensiveCategories);
+
+                if (questions.isEmpty()) {
+                        return new ResponseEntity<>(Collections.emptyList(), HttpStatus.OK);
+                }
 
                 Collections.shuffle(questions);
 
@@ -158,7 +177,7 @@ public class QuizController {
                 return new ResponseEntity<>(responseDTO, HttpStatus.OK);
         }
 
-        // NEW ENDPOINT: Get quiz results for a specific job post
+        // Get quiz results for a specific job post
         @GetMapping("/results/job/{jobId}")
         public ResponseEntity<List<QuizResultResponseDTO>> getQuizResultsByJobId(@PathVariable String jobId) {
                 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
